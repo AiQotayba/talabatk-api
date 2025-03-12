@@ -43,13 +43,19 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     const token = userService.generateToken(user)
 
     // Return user without password
-    const { password: _, ...userResponse } = user
-    console.log(userResponse)
+    const { password: _, ...userResponse } = user?._doc
+    console.log(userResponse?._doc)
 
     res.status(200).json({
       success: true,
       data: {
-        user: userResponse._doc || userResponse,
+        user: {
+          _id: user._id,
+          email: user.email,
+          name: user.name,
+          phone: user.phone,
+          role: user.role,
+        },
         token,
       },
     })

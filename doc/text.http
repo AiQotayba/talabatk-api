@@ -1,74 +1,11 @@
-# config
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDBiZmY3YWMzNjMwYTQ1N2RkMGIxNyIsImVtYWlsIjoia3RzeXIxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTczNDg0OCwiZXhwIjoxNzQ0MzI2ODQ4fQ.iwr7uzlDdwTwLLp1zFp5rlA3yZRWCKG985n0FTNLifs
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDBiZmY3YWMzNjMwYTQ1N2RkMGIxNyIsImVtYWlsIjoia3RzeXIxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTc0NjM2OCwiZXhwIjoxNzQ0MzM4MzY4fQ.py4T8G-AE5WWVx_vYULESPZrD2vET5HSGV5KPRfZvM0
- @user_id = 67d0d7b7006a70d7dd3fe56e
-@cat_id = 67d0e1f99aa590eaeda92ef0 
-### Order Endpoints
 
-# Get current user's orders ✅
-GET http://localhost:3000/api/orders/my-orders
-Authorization: Bearer {{token}}
 
-# Get order by ID
-GET http://localhost:3000/api/orders/67d0e1f99aa590eaeda92ef0
-Authorization: Bearer {{token}}
-
-# Create a new order
-POST http://localhost:3000/api/orders
-Authorization: Bearer {{token}}
-Content-Type: application/json
+# @API = https://talabatk-api.vercel.app 
+@API = http://localhost:3000
+POST {{API}}/api/auth/login
+Content-Type: application/json 
 
 {
-  "address": "67d0fa5ca8c61609f5363187",
-  "total_amount": 50.00
+  "email": "ktsyr1@gmail.com",
+  "password": "sts22ring"
 }
-
-# Update order status
-PATCH http://localhost:3000/api/orders/1/status
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{
-  "status": "delivered"
-}
-
-### Cart Endpoints
-
-# Get current user's cart ✅
-GET http://localhost:3000/api/cart
-Authorization: Bearer {{token}}
-
-# Add item to cart ✅
-
-POST http://localhost:3000/api/cart
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-{
-  "productId": "67d0e4307bf7dbfe8f107e8a",
-  "quantity": 2
-}
-
-# Update cart item quantity ✅
-PATCH http://localhost:3000/api/cart/67d0e990a8c61609f536314b
-Authorization: Bearer {{token}}
-Content-Type: application/json
-
-{
-  "quantity": 3
-}
-
-# Remove item from cart
-DELETE http://localhost:3000/api/cart/1
-Authorization: Bearer {{token}}
-
-# Clear entire cart
-DELETE http://localhost:3000/api/cart
-Authorization: Bearer {{token}}
-
-### Address Endpoints
-
-# Get current user's addresses ✅
-GET http://localhost:3000/api/addresses
-Authorization: Bearer {{token}}
- 

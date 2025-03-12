@@ -29,7 +29,7 @@ app.use(limiter);
 app.use("/api", routes);
 
 app.get("/", (req, res) => {
-  res.send("API is running");
+  res.send("<h1>API is running</h1>\n\n <i>Version: 1.0.0</i>");
 });
 
 // Error handling middleware
