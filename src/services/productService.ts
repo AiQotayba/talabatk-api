@@ -19,42 +19,39 @@ export const getProductById = async (id: string): Promise<IProduct> => {
 
   return product
 }
-
 export const createProduct = async (productData: Partial<IProduct>): Promise<IProduct> => {
-  const { name, description, price, image, category } = productData
+  const { name, description, price, image, category } = productData;
 
-  const product = new Product({
+  // إنشاء المنتج باستخدام Product.create
+  const savedProduct = await Product.create({
     name,
     description,
     price,
     image,
     category,
-  })
+  });
 
-  const savedProduct = await product.save()
+  // تحديث عدد الخيارات في الفئة
+  await categoryService.incrementCategoryOptionsCount(category as unknown as string);
 
-  // Update category options count
-  await categoryService.incrementCategoryOptionsCount(category as unknown as string)
-
-  return savedProduct.populate("category")
-}
+  // إرجاع المنتج مع تفاصيل الفئة (populate)
+  return savedProduct.populate("category");
+};
 
 export const updateProduct = async (id: string, productData: Partial<IProduct>): Promise<IProduct> => {
-  const { name, description, price, image, category } = productData
 
   // Check if product exists and get current category
   const currentProduct = await getProductById(id)
 
   const product = await Product.findByIdAndUpdate(
-    id,
-    { name, description, price, image, category },
+    id, productData,
     { new: true, runValidators: true },
   ).populate("category")
 
   if (!product) {
     throw new NotFoundError(`Product with ID ${id} not found`)
   }
-
+  const { category } = productData;
   // If category changed, update counts
   if (category && currentProduct.category.toString() !== category.toString()) {
     await categoryService.decrementCategoryOptionsCount(currentProduct.category.toString())

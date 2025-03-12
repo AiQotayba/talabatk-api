@@ -10,7 +10,7 @@ export const validate = (validations: ValidationChain[]) => {
     // Check for validation errors
     const errors = validationResult(req)
 
-    if (!errors.isEmpty()) {
+    if (!errors?.isEmpty()) {
       return next(new BadRequestError("Validation error", errors.array()))
     }
 

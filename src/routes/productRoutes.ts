@@ -23,7 +23,7 @@ router.post(
   validate([
     body("name").notEmpty().withMessage("Name is required"),
     body("price").isNumeric().withMessage("Price must be a number"),
-    body("category_id").notEmpty().withMessage("Category ID is required"),
+    body("category").notEmpty().withMessage("Category ID is required"),
     body("image").optional().isURL().withMessage("Image must be a valid URL"),
   ]),
   productController.createProduct,
@@ -33,13 +33,7 @@ router.post(
 router.put(
   "/:id",
   authenticate,
-  authorize(["admin"]),
-  validate([
-    body("name").notEmpty().withMessage("Name is required"),
-    body("price").isNumeric().withMessage("Price must be a number"),
-    body("category_id").notEmpty().withMessage("Category ID is required"),
-    body("image").optional().isURL().withMessage("Image must be a valid URL"),
-  ]),
+  authorize(["admin"]), 
   productController.updateProduct,
 )
 

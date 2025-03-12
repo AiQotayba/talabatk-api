@@ -23,21 +23,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     const token = authHeader.split(" ")[1]
 
-    if (!token) {
-      throw new UnauthorizedError("No token provided")
-    }
+    if (!token) throw new UnauthorizedError("No token provided")
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key") as any
-    console.log(decoded);
-
     // Check if user exists
-    const user = await User.findById(decoded.id).select("-password")
-    console.log(user);
+    const user = await User.findOne({ email: decoded.email }).select("-password")
 
-    if (!user) {
-      throw new UnauthorizedError("User not found")
-    }
+    if (!user) throw new UnauthorizedError("User not found")
 
     // Add user from payload to request
     req.user = {

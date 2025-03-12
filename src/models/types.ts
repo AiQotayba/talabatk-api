@@ -25,7 +25,7 @@ export interface User {
 }
 
 export interface UserResponse {
-  id: any
+  id?: any
   email: string
   name?: string
   phone?: string

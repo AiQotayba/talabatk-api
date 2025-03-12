@@ -17,7 +17,7 @@ router.post(
   "/",
   authenticate,
   validate([
-    body("addressId").notEmpty().withMessage("Address ID is required"),
+    body("address").notEmpty().withMessage("Address ID is required"),
     body("items").isArray().withMessage("Items must be an array"),
     body("items.*.productId").notEmpty().withMessage("Product ID is required"),
     body("items.*.quantity").isInt({ min: 1 }).withMessage("Quantity must be at least 1"),

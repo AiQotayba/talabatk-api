@@ -7,10 +7,7 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
   try {
     const users = await userService.getAllUsers()
 
-    res.status(200).json({
-      success: true,
-      data: users,
-    })
+    res.status(200).json({ success: true, data: users })
   } catch (error) {
     next(error)
   }
@@ -45,7 +42,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
     }
 
     // Create user
-    const user = await userService.createUser(email, password, name, phone, role || UserRole.USER)
+    const user = await userService.createUser(email, password, name, phone)
 
     res.status(201).json({
       success: true,

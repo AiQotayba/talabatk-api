@@ -19,7 +19,6 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     res.status(201).json({
       success: true,
       data: {
-        user,
         token,
       },
     })
@@ -37,18 +36,20 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     }
 
     // Validate credentials
-    const user = await userService.validateCredentials(email, password)
+    const user: any = await userService.validateCredentials(email, password)
+    console.log(user)
 
     // Generate token
     const token = userService.generateToken(user)
 
     // Return user without password
     const { password: _, ...userResponse } = user
+    console.log(userResponse)
 
     res.status(200).json({
       success: true,
       data: {
-        user: userResponse,
+        user: userResponse._doc || userResponse,
         token,
       },
     })
@@ -59,14 +60,14 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
 export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await userService.findUserById(req.user.id)
+    const user: any = await userService.findUserById(req.user.id)
 
     // Return user without password
     const { password: _, ...userResponse } = user
 
     res.status(200).json({
       success: true,
-      data: userResponse,
+      data: userResponse?._doc || userResponse,
     })
   } catch (error) {
     next(error)

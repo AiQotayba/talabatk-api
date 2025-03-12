@@ -4,11 +4,11 @@ import type { UserResponse } from "../models/types"
 import { NotFoundError, BadRequestError, UnauthorizedError } from "../utils/errors"
 
 export const findUserByEmail = async (email: string): Promise<IUser | null> => {
-  return User.findOne({ email })
+  return User.findOne({ email }).exec();
 }
 
 export const findUserById = async (id: string): Promise<IUser> => {
-  const user = await User.findById(id)
+  const user = await User.findById(id).lean()
 
   if (!user) {
     throw new NotFoundError(`User with ID ${id} not found`)
@@ -21,8 +21,7 @@ export const createUser = async (
   email: string,
   password: string,
   name?: string,
-  phone?: string,
-  role: UserRole = UserRole.USER,
+  phone?: string
 ): Promise<UserResponse> => {
   // Check if user already exists
   const existingUser = await findUserByEmail(email)
@@ -30,33 +29,13 @@ export const createUser = async (
   if (existingUser) {
     throw new BadRequestError("Email already in use")
   }
+  const user = await User.create({ email, password, name, phone, role: UserRole.USER });
+  return user.toObject(); // تحويل إلى كائن JavaScript عادي
 
-  // Create user
-  const user = new User({
-    email,
-    password, // Will be hashed by the pre-save hook
-    name,
-    phone,
-    role,
-  })
-
-  await user.save()
-
-  // Return user without password
-  return {
-    id: user._id,
-    email: user.email,
-    name: user.name,
-    phone: user.phone,
-    role: user.role,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  }
 }
 
 export const validateCredentials = async (email: string, password: string): Promise<IUser> => {
-  const user = await findUserByEmail(email)
-
+  const user = await User.findOne({ email }).exec();
   if (!user) {
     throw new UnauthorizedError("Invalid credentials")
   }
@@ -124,22 +103,11 @@ export const changePassword = async (userId: string, currentPassword: string, ne
 }
 
 export const updateUserRole = async (userId: string, role: UserRole): Promise<UserResponse> => {
-  const user = await findUserById(userId)
 
-  // Update role
-  user.role = role
-  await user.save()
+  const user: any = await User.findOneAndUpdate({ _id: userId }, { role }, { new: true, runValidators: true }).lean().select("-password")
 
   // Return user without password
-  return {
-    id: user._id,
-    email: user.email,
-    name: user.name,
-    phone: user.phone,
-    role: user.role,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  }
+  return user
 }
 
 export const getAllUsers = async (): Promise<UserResponse[]> => {
