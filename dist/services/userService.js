@@ -41,46 +41,29 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = __importStar(require("../models/User"));
 const errors_1 = require("../utils/errors");
 const findUserByEmail = async (email) => {
-    return User_1.default.findOne({ email });
+    return User_1.default.findOne({ email }).exec();
 };
 exports.findUserByEmail = findUserByEmail;
 const findUserById = async (id) => {
-    const user = await User_1.default.findById(id);
+    const user = await User_1.default.findById(id).lean();
     if (!user) {
         throw new errors_1.NotFoundError(`User with ID ${id} not found`);
     }
     return user;
 };
 exports.findUserById = findUserById;
-const createUser = async (email, password, name, phone, role = User_1.UserRole.USER) => {
+const createUser = async (email, password, name, phone) => {
     // Check if user already exists
     const existingUser = await (0, exports.findUserByEmail)(email);
     if (existingUser) {
         throw new errors_1.BadRequestError("Email already in use");
     }
-    // Create user
-    const user = new User_1.default({
-        email,
-        password, // Will be hashed by the pre-save hook
-        name,
-        phone,
-        role,
-    });
-    await user.save();
-    // Return user without password
-    return {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        phone: user.phone,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-    };
+    const user = await User_1.default.create({ email, password, name, phone, role: User_1.UserRole.USER });
+    return user.toObject(); // تحويل إلى كائن JavaScript عادي
 };
 exports.createUser = createUser;
 const validateCredentials = async (email, password) => {
-    const user = await (0, exports.findUserByEmail)(email);
+    const user = await User_1.default.findOne({ email }).exec();
     if (!user) {
         throw new errors_1.UnauthorizedError("Invalid credentials");
     }
@@ -133,20 +116,9 @@ const changePassword = async (userId, currentPassword, newPassword) => {
 };
 exports.changePassword = changePassword;
 const updateUserRole = async (userId, role) => {
-    const user = await (0, exports.findUserById)(userId);
-    // Update role
-    user.role = role;
-    await user.save();
+    const user = await User_1.default.findOneAndUpdate({ _id: userId }, { role }, { new: true, runValidators: true }).lean().select("-password");
     // Return user without password
-    return {
-        id: user._id,
-        email: user.email,
-        name: user.name,
-        phone: user.phone,
-        role: user.role,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-    };
+    return user;
 };
 exports.updateUserRole = updateUserRole;
 const getAllUsers = async () => {

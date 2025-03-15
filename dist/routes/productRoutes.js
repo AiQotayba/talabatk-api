@@ -34,10 +34,8 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const express_validator_1 = require("express-validator");
 const productController = __importStar(require("../controllers/productController"));
 const auth_1 = require("../middleware/auth");
-const validation_1 = require("../middleware/validation");
 const router = (0, express_1.Router)();
 // Get all products
 router.get("/", productController.getAllProducts);
@@ -46,19 +44,9 @@ router.get("/category/:categoryId", productController.getProductsByCategory);
 // Get product by ID
 router.get("/:id", productController.getProductById);
 // Create product - Admin only
-router.post("/", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), (0, validation_1.validate)([
-    (0, express_validator_1.body)("name").notEmpty().withMessage("Name is required"),
-    (0, express_validator_1.body)("price").isNumeric().withMessage("Price must be a number"),
-    (0, express_validator_1.body)("category_id").notEmpty().withMessage("Category ID is required"),
-    (0, express_validator_1.body)("image").optional().isURL().withMessage("Image must be a valid URL"),
-]), productController.createProduct);
+router.post("/", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), productController.createProduct);
 // Update product - Admin only
-router.put("/:id", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), (0, validation_1.validate)([
-    (0, express_validator_1.body)("name").notEmpty().withMessage("Name is required"),
-    (0, express_validator_1.body)("price").isNumeric().withMessage("Price must be a number"),
-    (0, express_validator_1.body)("category_id").notEmpty().withMessage("Category ID is required"),
-    (0, express_validator_1.body)("image").optional().isURL().withMessage("Image must be a valid URL"),
-]), productController.updateProduct);
+router.put("/:id", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), productController.updateProduct);
 // Delete product - Admin only
 router.delete("/:id", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), productController.deleteProduct);
 exports.default = router;

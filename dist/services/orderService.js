@@ -63,7 +63,7 @@ const createOrder = async (userId, addressId, items) => {
     // Calculate total amount
     const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     // Create order
-    const order = new Order_1.default({
+    const orderNew = Order_1.default.create({
         user: userId,
         address: addressId,
         items: items.map((item) => ({
@@ -81,14 +81,11 @@ const createOrder = async (userId, addressId, items) => {
             },
         ],
     });
-    const savedOrder = await order.save();
     // Clear cart items
     await cartService.clearCart(userId);
-    return savedOrder.populate([
-        { path: "user", select: "-password" },
-        { path: "address" },
-        { path: "items.product", model: "Product" },
-    ]);
+    const order = await Order_1.default.findOne({ _id: orderNew._id }, { new: true, runValidators: true })
+        .populate([{ path: "user", select: "-password" }, { path: "address" }, { path: "items.product", model: "Product" }]);
+    return order;
 };
 exports.createOrder = createOrder;
 const updateOrderStatus = async (orderId, status, notes) => {

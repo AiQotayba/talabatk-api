@@ -40,10 +40,7 @@ const types_1 = require("../models/types");
 const getAllUsers = async (req, res, next) => {
     try {
         const users = await userService.getAllUsers();
-        res.status(200).json({
-            success: true,
-            data: users,
-        });
+        res.status(200).json({ success: true, data: users });
     }
     catch (error) {
         next(error);
@@ -75,7 +72,7 @@ const createUser = async (req, res, next) => {
             throw new errors_1.BadRequestError("Invalid role");
         }
         // Create user
-        const user = await userService.createUser(email, password, name, phone, role || types_1.UserRole.USER);
+        const user = await userService.createUser(email, password, name, phone);
         res.status(201).json({
             success: true,
             data: user,

@@ -17,10 +17,7 @@ router.post(
   "/",
   authenticate,
   authorize(["admin"]),
-  validate([
-    body("name").notEmpty().withMessage("Name is required"),
-    body("image").optional().isURL().withMessage("Image must be a valid URL"),
-  ]),
+ 
   categoryController.createCategory,
 )
 
@@ -28,11 +25,7 @@ router.post(
 router.put(
   "/:id",
   authenticate,
-  authorize(["admin"]),
-  validate([
-    body("name").notEmpty().withMessage("Name is required"),
-    body("image").optional().isURL().withMessage("Image must be a valid URL"),
-  ]),
+  authorize(["admin"]), 
   categoryController.updateCategory,
 )
 

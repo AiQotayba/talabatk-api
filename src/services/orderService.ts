@@ -35,7 +35,7 @@ export const createOrder = async (
   const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   // Create order
-  const order = new Order({
+  const orderNew: any = Order.create({
     user: userId,
     address: addressId,
     items: items.map((item) => ({
@@ -54,16 +54,15 @@ export const createOrder = async (
     ],
   })
 
-  const savedOrder = await order.save()
-
   // Clear cart items
   await cartService.clearCart(userId)
 
-  return savedOrder.populate([
-    { path: "user", select: "-password" },
-    { path: "address" },
-    { path: "items.product", model: "Product" },
-  ])
+  const order: any = await Order.findOne(
+    { _id: orderNew._id },
+    { new: true, runValidators: true })
+    .populate([{ path: "user", select: "-password" }, { path: "address" }, { path: "items.product", model: "Product" }])
+
+  return order
 }
 
 export const updateOrderStatus = async (orderId: string, status: OrderStatus, notes?: string): Promise<IOrder> => {

@@ -1,6 +1,6 @@
 # config
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDBiZmY3YWMzNjMwYTQ1N2RkMGIxNyIsImVtYWlsIjoia3RzeXIxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTczNDg0OCwiZXhwIjoxNzQ0MzI2ODQ4fQ.iwr7uzlDdwTwLLp1zFp5rlA3yZRWCKG985n0FTNLifs
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDBiZmY3YWMzNjMwYTQ1N2RkMGIxNyIsImVtYWlsIjoia3RzeXIxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTc1NjM5OSwiZXhwIjoxNzQ0MzQ4Mzk5fQ.vlOxd5YcbnBLtVcAXdgr7m-67dQM3O3-CopTdrdhbBg
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDBiZmY3YWMzNjMwYTQ1N2RkMGIxNyIsImVtYWlsIjoia3RzeXIxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTk2MjcxNywiZXhwIjoxNzQ0NTU0NzE3fQ.kh-ez4EZflWzC4M0FVw19UeJGsPnqpohSF0CBOORxAU
 @user_id = 67d0d7b7006a70d7dd3fe56e
 @cat_id = 67d0e1f99aa590eaeda92ef0
 @API = https://talabatk-api.vercel.app
@@ -155,13 +155,22 @@ GET http://localhost:3000/api/orders/1
 Authorization: Bearer {{token}}
 
 # Create a new order
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDBiZmY3YWMzNjMwYTQ1N2RkMGIxNyIsImVtYWlsIjoia3RzeXIxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTk2MjcxNywiZXhwIjoxNzQ0NTU0NzE3fQ.kh-ez4EZflWzC4M0FVw19UeJGsPnqpohSF0CBOORxAU
+
 POST http://localhost:3000/api/orders
 Authorization: Bearer {{token}}
 Content-Type: application/json
-
 {
-  "address_id": "1",
-  "total_amount": 50.00
+    "addressId": "67d38b861fedaae9e013e870",
+    "items": [
+        {
+            "product_id": "67d0e5419fbe73e4ef3b0281",
+            "quantity": 1,
+            "price": 10.99
+        }
+    ],
+    "total_amount": 10.99
 }
 
 # Update order status

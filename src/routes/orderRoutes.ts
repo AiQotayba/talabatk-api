@@ -1,39 +1,33 @@
-import { Router } from "express"
-import { body } from "express-validator"
-import * as orderController from "../controllers/orderController"
-import { authenticate, authorize } from "../middleware/auth"
-import { validate } from "../middleware/validation"
+import { Router } from "express";
+import { body } from "express-validator";
+import * as orderController from "../controllers/orderController";
+import { authenticate, authorize } from "../middleware/auth";
+import { validate } from "../middleware/validation";
 
-const router = Router()
+const router = Router();
 
-// Get my orders
-router.get("/my-orders", authenticate, orderController.getMyOrders)
+// الحصول على جميع الطلبات (للإدارة)
+router.get("/", authenticate, authorize(["admin"]), orderController.getAllOrders);
 
-// Get order by ID
-// router.get("/:id", authenticate, orderController.getOrderById)
+// الحصول على طلبات المستخدم
+router.get("/my-orders", authenticate, orderController.getMyOrders);
 
-// Create order
-router.post(
-  "/",
-  authenticate,
-  validate([
-    body("address").notEmpty().withMessage("Address ID is required"),
-    body("items").isArray().withMessage("Items must be an array"),
-    body("items.*.productId").notEmpty().withMessage("Product ID is required"),
-    body("items.*.quantity").isInt({ min: 1 }).withMessage("Quantity must be at least 1"),
-    body("items.*.price").isNumeric().withMessage("Price must be a number"),
-  ]),
-  orderController.createOrder,
-)
+// الحصول على طلب بواسطة ID
+router.get("/:id", authenticate, orderController.getOrderById);
 
-// Update order status - Admin only
+// إنشاء طلب جديد
+router.post("/", authenticate, orderController.createOrder);
+
+// تحديث حالة الطلب (للإدارة)
 router.patch(
   "/:id/status",
   authenticate,
   authorize(["admin"]),
   validate([body("status").notEmpty().withMessage("Status is required")]),
-  // orderController.updateOrderStatus,
-)
+  orderController.updateOrderStatus
+);
 
-export default router
+// حذف طلب (للإدارة)
+router.delete("/:id", authenticate, authorize(["admin"]), orderController.deleteOrder);
 
+export default router;

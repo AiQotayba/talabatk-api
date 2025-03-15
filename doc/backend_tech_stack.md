@@ -243,10 +243,12 @@ Below is a comprehensive list of all API endpoints in the Talabatk food ordering
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|--------------|
+| GET | `/orders` | Get current user's orders | Yes (Admin) |
 | GET | `/orders/my-orders` | Get current user's orders | Yes |
 | GET | `/orders/:id` | Get order by ID | Yes |
 | POST | `/orders` | Create a new order | Yes |
 | PATCH | `/orders/:id/status` | Update order status | Yes (Admin) |
+| DELETE | `/orders/:id` | Delete an order | Yes (Admin) |
 
 ## Cart Endpoints
 

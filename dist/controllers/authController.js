@@ -49,7 +49,6 @@ const register = async (req, res, next) => {
         res.status(201).json({
             success: true,
             data: {
-                user,
                 token,
             },
         });
@@ -67,14 +66,22 @@ const login = async (req, res, next) => {
         }
         // Validate credentials
         const user = await userService.validateCredentials(email, password);
+        console.log(user);
         // Generate token
         const token = userService.generateToken(user);
         // Return user without password
-        const { password: _, ...userResponse } = user;
+        const { password: _, ...userResponse } = user?._doc;
+        console.log(userResponse?._doc);
         res.status(200).json({
             success: true,
             data: {
-                user: userResponse,
+                user: {
+                    _id: user._id,
+                    email: user.email,
+                    name: user.name,
+                    phone: user.phone,
+                    role: user.role,
+                },
                 token,
             },
         });
@@ -91,7 +98,7 @@ const getProfile = async (req, res, next) => {
         const { password: _, ...userResponse } = user;
         res.status(200).json({
             success: true,
-            data: userResponse,
+            data: userResponse?._doc || userResponse,
         });
     }
     catch (error) {

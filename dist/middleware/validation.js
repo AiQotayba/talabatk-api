@@ -9,7 +9,7 @@ const validate = (validations) => {
         await Promise.all(validations.map((validation) => validation.run(req)));
         // Check for validation errors
         const errors = (0, express_validator_1.validationResult)(req);
-        if (!errors.isEmpty()) {
+        if (!errors?.isEmpty()) {
             return next(new errors_1.BadRequestError("Validation error", errors.array()));
         }
         next();

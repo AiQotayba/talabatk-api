@@ -1,11 +1,28 @@
 
 
 # @API = https://talabatk-api.vercel.app 
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDBiZmY3YWMzNjMwYTQ1N2RkMGIxNyIsImVtYWlsIjoia3RzeXIxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTk2NDgwOCwiZXhwIjoxNzQ0NTU2ODA4fQ.CP148O_SUkaT38hyK3njoYW3USUrp1pg6T_FnP-h1pU
 @API = http://localhost:3000
+# 
 POST {{API}}/api/auth/login
 Content-Type: application/json 
 
 {
   "email": "ktsyr1@gmail.com",
   "password": "sts22ring"
+}
+
+POST http://localhost:3000/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZDBiZmY3YWMzNjMwYTQ1N2RkMGIxNyIsImVtYWlsIjoia3RzeXIxQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MTk2NDgwOCwiZXhwIjoxNzQ0NTU2ODA4fQ.CP148O_SUkaT38hyK3njoYW3USUrp1pg6T_FnP-h1pU
+Content-Type: application/json
+{
+    "addressId": "67d38b861fedaae9e013e870",
+    "items": [
+        {
+            "product_id": "67d0e5419fbe73e4ef3b0281",
+            "quantity": 1,
+            "price": 10.99
+        }
+    ],
+    "total_amount": 10.99
 }

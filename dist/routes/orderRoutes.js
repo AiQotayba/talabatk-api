@@ -39,18 +39,16 @@ const orderController = __importStar(require("../controllers/orderController"));
 const auth_1 = require("../middleware/auth");
 const validation_1 = require("../middleware/validation");
 const router = (0, express_1.Router)();
-// Get my orders
+// الحصول على جميع الطلبات (للإدارة)
+router.get("/", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), orderController.getAllOrders);
+// الحصول على طلبات المستخدم
 router.get("/my-orders", auth_1.authenticate, orderController.getMyOrders);
-// Get order by ID
-// router.get("/:id", authenticate, orderController.getOrderById)
-// Create order
-router.post("/", auth_1.authenticate, (0, validation_1.validate)([
-    (0, express_validator_1.body)("addressId").notEmpty().withMessage("Address ID is required"),
-    (0, express_validator_1.body)("items").isArray().withMessage("Items must be an array"),
-    (0, express_validator_1.body)("items.*.productId").notEmpty().withMessage("Product ID is required"),
-    (0, express_validator_1.body)("items.*.quantity").isInt({ min: 1 }).withMessage("Quantity must be at least 1"),
-    (0, express_validator_1.body)("items.*.price").isNumeric().withMessage("Price must be a number"),
-]), orderController.createOrder);
-// Update order status - Admin only
-router.patch("/:id/status", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), (0, validation_1.validate)([(0, express_validator_1.body)("status").notEmpty().withMessage("Status is required")]));
+// الحصول على طلب بواسطة ID
+router.get("/:id", auth_1.authenticate, orderController.getOrderById);
+// إنشاء طلب جديد
+router.post("/", auth_1.authenticate, orderController.createOrder);
+// تحديث حالة الطلب (للإدارة)
+router.patch("/:id/status", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), (0, validation_1.validate)([(0, express_validator_1.body)("status").notEmpty().withMessage("Status is required")]), orderController.updateOrderStatus);
+// حذف طلب (للإدارة)
+router.delete("/:id", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), orderController.deleteOrder);
 exports.default = router;

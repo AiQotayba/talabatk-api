@@ -58,27 +58,28 @@ const getProductById = async (id) => {
 exports.getProductById = getProductById;
 const createProduct = async (productData) => {
     const { name, description, price, image, category } = productData;
-    const product = new Product_1.default({
+    // إنشاء المنتج باستخدام Product.create
+    const savedProduct = await Product_1.default.create({
         name,
         description,
         price,
         image,
         category,
     });
-    const savedProduct = await product.save();
-    // Update category options count
+    // تحديث عدد الخيارات في الفئة
     await categoryService.incrementCategoryOptionsCount(category);
+    // إرجاع المنتج مع تفاصيل الفئة (populate)
     return savedProduct.populate("category");
 };
 exports.createProduct = createProduct;
 const updateProduct = async (id, productData) => {
-    const { name, description, price, image, category } = productData;
     // Check if product exists and get current category
     const currentProduct = await (0, exports.getProductById)(id);
-    const product = await Product_1.default.findByIdAndUpdate(id, { name, description, price, image, category }, { new: true, runValidators: true }).populate("category");
+    const product = await Product_1.default.findByIdAndUpdate(id, productData, { new: true, runValidators: true }).populate("category");
     if (!product) {
         throw new errors_1.NotFoundError(`Product with ID ${id} not found`);
     }
+    const { category } = productData;
     // If category changed, update counts
     if (category && currentProduct.category.toString() !== category.toString()) {
         await categoryService.decrementCategoryOptionsCount(currentProduct.category.toString());

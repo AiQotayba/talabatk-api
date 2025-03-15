@@ -15,18 +15,14 @@ const authenticate = async (req, res, next) => {
             throw new errors_1.UnauthorizedError("No token provided");
         }
         const token = authHeader.split(" ")[1];
-        if (!token) {
+        if (!token)
             throw new errors_1.UnauthorizedError("No token provided");
-        }
         // Verify token
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || "your-secret-key");
-        console.log(decoded);
         // Check if user exists
-        const user = await User_1.default.findById(decoded.id).select("-password");
-        console.log(user);
-        if (!user) {
+        const user = await User_1.default.findOne({ email: decoded.email }).select("-password");
+        if (!user)
             throw new errors_1.UnauthorizedError("User not found");
-        }
         // Add user from payload to request
         req.user = {
             id: user._id,

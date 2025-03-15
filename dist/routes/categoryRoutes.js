@@ -34,25 +34,17 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const express_validator_1 = require("express-validator");
 const categoryController = __importStar(require("../controllers/categoryController"));
 const auth_1 = require("../middleware/auth");
-const validation_1 = require("../middleware/validation");
 const router = (0, express_1.Router)();
 // Get all categories
 router.get("/", categoryController.getAllCategories);
 // Get category by ID
 router.get("/:id", categoryController.getCategoryById);
 // Create category - Admin only
-router.post("/", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), (0, validation_1.validate)([
-    (0, express_validator_1.body)("name").notEmpty().withMessage("Name is required"),
-    (0, express_validator_1.body)("image").optional().isURL().withMessage("Image must be a valid URL"),
-]), categoryController.createCategory);
+router.post("/", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), categoryController.createCategory);
 // Update category - Admin only
-router.put("/:id", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), (0, validation_1.validate)([
-    (0, express_validator_1.body)("name").notEmpty().withMessage("Name is required"),
-    (0, express_validator_1.body)("image").optional().isURL().withMessage("Image must be a valid URL"),
-]), categoryController.updateCategory);
+router.put("/:id", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), categoryController.updateCategory);
 // Delete category - Admin only
 router.delete("/:id", auth_1.authenticate, (0, auth_1.authorize)(["admin"]), categoryController.deleteCategory);
 exports.default = router;

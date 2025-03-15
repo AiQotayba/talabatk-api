@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
-const express_rate_limit_1 = require("express-rate-limit");
 const routes_1 = __importDefault(require("./routes"));
 const database_1 = require("./config/database");
 // Initialize express app
@@ -18,20 +17,26 @@ app.use((0, cors_1.default)()); // Enable CORS
 app.use(express_1.default.json()); // Parse JSON bodies
 app.use(express_1.default.urlencoded({ extended: true })); // Parse URL-encoded bodies
 // Rate limiting
-const limiter = (0, express_rate_limit_1.rateLimit)({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
-    standardHeaders: true,
-    legacyHeaders: false,
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 100, // Limit each IP to 100 requests per windowMs
+//   standardHeaders: true,
+//   legacyHeaders: false,
+// });
+// app.use(limiter);
 // Routes
 app.use("/api", routes_1.default);
 app.get("/", (req, res) => {
-    res.send("API is running");
+    res.send("<h1>API is running</h1>\n\n <i>Version: 1.0.0</i>");
 });
 // Error handling middleware
-// app.use(errorHandler)
+// Error handling middleware
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).json({
+        success: false,
+        error: err.message,
+    });
+});
 // Start server
 const startServer = async () => {
     try {
